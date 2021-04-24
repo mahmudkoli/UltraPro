@@ -90,6 +90,7 @@ namespace UltraPro.Repositories.Core
 
         public virtual async Task<TResult> GetFirstOrDefaultAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
                             Expression<Func<TEntity, bool>> predicate = null,
+                            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                             bool disableTracking = true)
         {
@@ -100,6 +101,9 @@ namespace UltraPro.Repositories.Core
 
             if (predicate != null)
                 query = query.Where(predicate);
+
+            if (orderBy != null)
+                query = orderBy(query);
 
             if (disableTracking)
                 query = query.AsNoTracking();
@@ -259,6 +263,7 @@ namespace UltraPro.Repositories.Core
 
         public virtual TResult GetFirstOrDefault<TResult>(Expression<Func<TEntity, TResult>> selector,
                             Expression<Func<TEntity, bool>> predicate = null,
+                            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                             bool disableTracking = true)
         {
@@ -269,6 +274,9 @@ namespace UltraPro.Repositories.Core
 
             if (predicate != null)
                 query = query.Where(predicate);
+
+            if (orderBy != null)
+                query = orderBy(query);
 
             if (disableTracking)
                 query = query.AsNoTracking();
@@ -477,6 +485,54 @@ namespace UltraPro.Repositories.Core
                         }
 
                         items.Add((TEntity)instance);
+                    }
+                }
+
+                totalCount = (int?)command.Parameters["TotalCount"].Value;
+                filteredCount = (int?)command.Parameters["FilteredCount"].Value;
+            }
+
+            return (items, totalCount ?? 0, filteredCount ?? 0);
+        }
+
+        public (IList<dynamic> Items, int Total, int TotalFilter) GetFromSql(string sql, IList<(string Key, object Value, bool IsOut)> parameters)
+        {
+            var items = new List<dynamic>();
+            int? totalCount = 0;
+            int? filteredCount = 0;
+
+            using (var command = _dbContext.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = sql;
+                command.CommandType = CommandType.StoredProcedure;
+                if (command.Connection.State != ConnectionState.Open) { command.Connection.Open(); }
+
+                foreach (var param in parameters)
+                {
+                    DbParameter dbParameter = command.CreateParameter();
+                    dbParameter.ParameterName = param.Key;
+                    if (!param.IsOut)
+                    {
+                        dbParameter.Value = param.Value;
+                    }
+                    else
+                    {
+                        dbParameter.Direction = ParameterDirection.Output;
+                        dbParameter.DbType = DbType.Int32;
+                    }
+                    command.Parameters.Add(dbParameter);
+                }
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var item = new ExpandoObject() as IDictionary<string, object>;
+                        for (var count = 0; count < reader.FieldCount; count++)
+                        {
+                            item.Add(reader.GetName(count), reader[count]);
+                        }
+                        items.Add(item);
                     }
                 }
 

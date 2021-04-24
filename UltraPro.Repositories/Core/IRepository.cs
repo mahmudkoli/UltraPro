@@ -29,6 +29,7 @@ namespace UltraPro.Repositories.Core
                             bool disableTracking = true);
         Task<TResult> GetFirstOrDefaultAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
                             Expression<Func<TEntity, bool>> predicate = null,
+                            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                             bool disableTracking = true);
         Task<TEntity> GetByIdAsync(object id);
@@ -59,6 +60,7 @@ namespace UltraPro.Repositories.Core
                             bool disableTracking = true);
         TResult GetFirstOrDefault<TResult>(Expression<Func<TEntity, TResult>> selector,
                             Expression<Func<TEntity, bool>> predicate = null,
+                            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                             bool disableTracking = true);
         TEntity GetById(object id);
@@ -80,6 +82,7 @@ namespace UltraPro.Repositories.Core
         IList<dynamic> GetFromSql(string sql, Dictionary<string, object> parameters, bool isStoredProcedure = false);
         DataSet GetDataSetFromSql(string sql, Dictionary<string, object> parameters, bool isStoredProcedure = false);
         (IList<TEntity> Items, int Total, int TotalFilter) GetFromSql(string sql, IList<(string Key, object Value, bool IsOut)> parameters, bool isStoredProcedure = true);
+        (IList<dynamic> Items, int Total, int TotalFilter) GetFromSql(string sql, IList<(string Key, object Value, bool IsOut)> parameters);
         #endregion
     }
 }
