@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UltraPro.Repositories.Implements.SingleValue;
+using UltraPro.Repositories.Interfaces.SingleValue;
 using UltraPro.Services.Implements;
 using UltraPro.Services.Interfaces;
 
@@ -26,6 +28,15 @@ namespace UltraPro.API
             //       .InstancePerLifetimeScope();
             //builder.RegisterType<ApplicationRoleService>().As<IApplicationRoleService>()
             //       .InstancePerLifetimeScope();
+
+            builder.RegisterType<SingleValueService>().As<ISingleValueService>()
+                   .InstancePerLifetimeScope();
+            builder.RegisterType<SingleValueTypeRepository>().As<ISingleValueTypeRepository>()
+                   .InstancePerLifetimeScope();
+            builder.RegisterType<SingleValueDetailRepository>().As<ISingleValueDetailRepository>()
+                   .InstancePerLifetimeScope();
+            builder.RegisterType<SingleValueUnitOfWork>().As<ISingleValueUnitOfWork>()
+                   .InstancePerLifetimeScope();
 
             base.Load(builder);
         }

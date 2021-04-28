@@ -25,6 +25,8 @@ namespace UltraPro.Repositories.Context
 
         // Add DbSet here
         public DbSet<Audit> Audits { get; set; }
+        public DbSet<SingleValueType> SingleValueTypes { get; set; }
+        public DbSet<SingleValueDetail> SingleValueDetails { get; set; }
 
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options,
