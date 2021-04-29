@@ -16,15 +16,15 @@ namespace UltraPro.API.Common
     {
         private const string JsonContentType = "application/json";
         private readonly RequestDelegate _next;
-        //private readonly ILogger<CustomExceptionHandlerMiddleware> _logger;
+        private readonly ILogger<CustomExceptionHandlerMiddleware> _logger;
 
         public CustomExceptionHandlerMiddleware(
-            RequestDelegate next, 
-            //ILogger<CustomExceptionHandlerMiddleware> logger
+            RequestDelegate next,
+            ILogger<CustomExceptionHandlerMiddleware> logger
             )
         {
             _next = next;
-            //_logger = logger;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
