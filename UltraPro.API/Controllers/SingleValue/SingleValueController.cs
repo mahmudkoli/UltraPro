@@ -36,127 +36,65 @@ namespace UltraPro.API.Controllers.SingleValue
         //[Authorize(Permissions.SingleValue.ListView)]
         public async Task<IActionResult> Get([FromQuery] SingleValueQuery query)
         {
-            try
-            {
-                var result = await _singleValueService.GetAllAsync(query);
-                var queryResult = _mapper.Map<QueryResult<SingleValueDetail>, QueryResult<SingleValueDetailModel>>(result);
-                return OkResult(queryResult);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _singleValueService.GetAllAsync(query);
+            var queryResult = _mapper.Map<QueryResult<SingleValueDetail>, QueryResult<SingleValueDetailModel>>(result);
+            return OkResult(queryResult);
         }
 
         [HttpGet("{id}")]
         //[Authorize(Permissions.SingleValue.DetailsView)]
         public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                var singleValue = await _singleValueService.GetByIdAsync(id);
-                var result = _mapper.Map<SingleValueDetail, SingleValueDetailModel>(singleValue);
-                return OkResult(result);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var singleValue = await _singleValueService.GetByIdAsync(id);
+            var result = _mapper.Map<SingleValueDetail, SingleValueDetailModel>(singleValue);
+            return OkResult(result);
         }
 
         [HttpPost]
         //[Authorize(Permissions.SingleValue.Create)]
         public async Task<IActionResult> Create([FromBody] SaveSingleValueDetailModel model)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return ValidationResult(ModelState);
-
-                var singleValue = _mapper.Map<SaveSingleValueDetailModel, SingleValueDetail>(model);
-                var result = await _singleValueService.AddAsync(singleValue);
-                return OkResult(result);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var singleValue = _mapper.Map<SaveSingleValueDetailModel, SingleValueDetail>(model);
+            var result = await _singleValueService.AddAsync(singleValue);
+            return OkResult(result);
         }
 
         [HttpPut("{id}")]
         //[Authorize(Permissions.SingleValue.Edit)]
         public async Task<IActionResult> Update(int id, [FromBody] SaveSingleValueDetailModel model)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return ValidationResult(ModelState);
-
-                var singleValue = _mapper.Map<SaveSingleValueDetailModel, SingleValueDetail>(model);
-                await _singleValueService.UpdateAsync(singleValue);
-                return OkResult(true);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var singleValue = _mapper.Map<SaveSingleValueDetailModel, SingleValueDetail>(model);
+            await _singleValueService.UpdateAsync(singleValue);
+            return OkResult(true);
         }
 
         [HttpDelete("{id}")]
         //[Authorize(Permissions.SingleValue.Delete)]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                await _singleValueService.DeleteAsync(id);
-                return OkResult(true);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            await _singleValueService.DeleteAsync(id);
+            return OkResult(true);
         }
 
         [HttpPost("activeInactive/{id}")]
         public async Task<IActionResult> ActiveInactive(int id)
         {
-            try
-            {
-                await _singleValueService.ActiveInactiveAsync(id);
-                return OkResult(true);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            await _singleValueService.ActiveInactiveAsync(id);
+            return OkResult(true);
         }
 
         [HttpGet("select/{typeCode}")]
         public async Task<IActionResult> GetSelect(string typeCode)
         {
-            try
-            {
-                var result = await _singleValueService.GetAllForSelectAsync(typeCode);
-                return OkResult(result);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _singleValueService.GetAllForSelectAsync(typeCode);
+            return OkResult(result);
         }
 
         [HttpGet("select-type")]
         public async Task<IActionResult> GetTypeSelect()
         {
-            try
-            {
-                var result = await _singleValueService.GetAllTypeForSelectAsync();
-                return OkResult(result);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _singleValueService.GetAllTypeForSelectAsync();
+            return OkResult(result);
         }
     }
 }

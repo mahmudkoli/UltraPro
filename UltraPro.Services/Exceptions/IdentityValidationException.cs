@@ -9,27 +9,29 @@ namespace UltraPro.Services.Exceptions
 {
     public class IdentityValidationException : Exception
     {
-        public IDictionary<string, string> Failures { get; }
+        public IDictionary<string, string[]> Failures { get; }
 
         public IdentityValidationException()
             : base("One or more validation failures have occurred.")
         {
-            Failures = new Dictionary<string, string>();
+            Failures = new Dictionary<string, string[]>();
         }
 
         public IdentityValidationException(string message)
             : base(message)
         {
-            Failures = new Dictionary<string, string>();
+            Failures = new Dictionary<string, string[]>();
         }
 
         public IdentityValidationException(IEnumerable<IdentityError> failures)
             : this(failures.Any() ? failures.FirstOrDefault().Description : "One or more validation failures have occurred.")
         {
-            foreach (var failure in failures)
+            var groupFailures = failures.GroupBy(x => x.Code);
+
+            foreach (var failure in groupFailures)
             {
-                var propertyName = failure.Code;
-                var propertyFailure = failure.Description;
+                var propertyName = failure.Key;
+                var propertyFailure = failure.Select(x => x.Description).ToArray();
 
                 Failures.Add(propertyName, propertyFailure);
             }

@@ -15,6 +15,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +25,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UltraPro.API.Common;
 using UltraPro.API.Core;
+using UltraPro.API.Filters;
 using UltraPro.API.Models.IdentityModels;
 using UltraPro.API.Services;
 using UltraPro.Common.Services;
@@ -147,15 +150,21 @@ namespace UltraPro.API
                 options.SuppressModelStateInvalidFilter = true;
             });
 
-            services.AddControllers()
+            services.AddControllers(options => 
+                {
+                    options.Filters.Add(typeof(GlobalModelStateValidatorAttribute));
+                })
                 .AddFluentValidation(options =>
                 {
                     options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
                     options.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                    //options.ImplicitlyValidateChildProperties = true;
                 })
                 .AddNewtonsoftJson(options =>
                 { 
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; 
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    //options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    //options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
 
             services.AddApiVersioning(options =>

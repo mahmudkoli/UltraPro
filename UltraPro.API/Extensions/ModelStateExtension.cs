@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UltraPro.Services.Exceptions;
 
 namespace UltraPro.API.Extensions
 {
@@ -17,8 +18,8 @@ namespace UltraPro.API.Extensions
                             select new ValidationError
                             {
                                 PropertyName = m.Key,
-                                Errors = (from msg in m.Value.Errors
-                                            select msg.ErrorMessage).ToArray()
+                                PropertyFailures = (from msg in m.Value.Errors
+                                                    select msg.ErrorMessage).ToArray()
                             })
                             .ToList();
             return errors;

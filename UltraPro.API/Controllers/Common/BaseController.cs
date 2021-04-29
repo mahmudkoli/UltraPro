@@ -7,6 +7,8 @@ using UltraPro.API.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using UltraPro.Services.Exceptions;
+using System.Net;
 
 namespace UltraPro.API.Controllers.Common
 {
@@ -17,9 +19,9 @@ namespace UltraPro.API.Controllers.Common
         {
             var apiResult = new ApiResponse
             {
-                StatusCode = 200,
-                Status = "Success",
-                Message = "Successful",
+                StatusCode = (int)HttpStatusCode.OK,
+                Status = ApiResponseStatus.Success.ToString(),
+                Message = "The operation has been successful.",
                 Data = data
             };
             return ObjectResult(apiResult);
@@ -29,8 +31,8 @@ namespace UltraPro.API.Controllers.Common
         {
             var apiResult = new ApiResponse
             {
-                StatusCode = 200,
-                Status = "Success",
+                StatusCode = (int)HttpStatusCode.OK,
+                Status = ApiResponseStatus.Success.ToString(),
                 Message = message,
                 Data = data
             };
@@ -41,9 +43,9 @@ namespace UltraPro.API.Controllers.Common
         {
             var apiResult = new ApiResponse
             {
-                StatusCode = 400,
-                Status = "ValidationError",
-                Message = "Validation Fail",
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Status = ApiResponseStatus.ValidationError.ToString(),
+                Message = "One or more validation failures have occurred.",
                 Errors = modelState.GetErrors()
             };
             return ObjectResult(apiResult);
@@ -53,11 +55,11 @@ namespace UltraPro.API.Controllers.Common
         {
             var apiResult = new ApiResponse
             {
-                StatusCode = 400,
-                Status = "Error",
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Status = ApiResponseStatus.Error.ToString(),
                 Message = ex.Message,
                 Data = new object(),
-                Errors = new List<ValidationError> { new ValidationError { PropertyName = "", Errors = new string[] { ex.Message } } }
+                Errors = new List<ValidationError> { new ValidationError { PropertyName = "", PropertyFailures = new string[] { ex.Message } } }
             };
             return ObjectResult(apiResult);
         }
@@ -66,11 +68,11 @@ namespace UltraPro.API.Controllers.Common
         {
             var apiResult = new ApiResponse
             {
-                StatusCode = 500,
-                Status = "Error",
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+                Status = ApiResponseStatus.Error.ToString(),
                 Message = ex.Message,
                 Data = new object(),
-                Errors = new List<ValidationError> { new ValidationError { PropertyName = "", Errors = new string[] { ex.Message } } }
+                Errors = new List<ValidationError> { new ValidationError { PropertyName = "", PropertyFailures = new string[] { ex.Message } } }
             };
             return ObjectResult(apiResult);
         }
