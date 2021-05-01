@@ -225,14 +225,16 @@ namespace UltraPro.API
             {
                 app.UseDeveloperExceptionPage();
             }
-            
-            //app.Use(next => new RequestDelegate(
-            //    async context => {
-            //        context.Request.EnableBuffering();
-            //        await next(context);
-            //    }
-            //));
 
+            app.Use(next => new RequestDelegate(
+                async context =>
+                {
+                    context.Request.EnableBuffering();
+                    await next(context);
+                }
+            ));
+
+            app.UseRequestResponseLogging();
             app.UseCustomExceptionHandler();
 
             app.UseHttpsRedirection();

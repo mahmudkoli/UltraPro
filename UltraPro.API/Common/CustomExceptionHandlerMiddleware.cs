@@ -33,7 +33,6 @@ namespace UltraPro.API.Common
         {
             try
             {
-                context.Request.EnableBuffering();
                 await _next(context);
             }
             catch (Exception ex)
@@ -85,18 +84,18 @@ namespace UltraPro.API.Common
         {
             _logger.LogError(exception, $"Exception Message: {exception.Message} {Environment.NewLine}" +
                             $"Http Request Information: {Environment.NewLine}" +
-                            $"Schema: {context.Request.Scheme} " +
+                            $"Scheme: {context.Request.Scheme} " +
                             $"Host: {context.Request.Host} " +
                             $"Path: {context.Request.Path} " +
                             $"QueryString: {context.Request.QueryString} {Environment.NewLine}" +
-                            $"Request Body: {await GetRequestBodyAsync(context)}");
+                            $"Request Body: {await GetRequestBodyAsync(context.Request)}");
         }
 
-        private async Task<string> GetRequestBodyAsync(HttpContext context)
+        private async Task<string> GetRequestBodyAsync(HttpRequest request)
         {
-            var request = context.Request;
             string body = string.Empty;
 
+            // body serialize for FormData
             if (request.HasFormContentType && request.Form.Any())
             {
                 var dictionary = request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
@@ -105,7 +104,7 @@ namespace UltraPro.API.Common
             else
             {
                 request.Body.Position = 0;
-                StreamReader reader = new StreamReader(request.Body);
+                var reader = new StreamReader(request.Body);
                 body = await reader.ReadToEndAsync();
                 request.Body.Position = 0;
             }
