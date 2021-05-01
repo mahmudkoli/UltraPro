@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -31,11 +33,12 @@ namespace UltraPro.API.Common
         {
             try
             {
+                context.Request.EnableBuffering();
                 await _next(context);
             }
             catch (Exception ex)
             {
-                //WriteExceptionAsync(context, ex);
+                await WriteExceptionAsync(context, ex);
                 await HandleExceptionAsync(context, ex);
             }
         }
@@ -78,10 +81,37 @@ namespace UltraPro.API.Common
             return context.Response.WriteAsync(JsonConvert.SerializeObject(apiResponse));
         }
 
-        //private void WriteExceptionAsync(HttpContext context, Exception exception)
-        //{
-        //    _logger.LogError(exception, exception.Message);
-        //}
+        private async Task WriteExceptionAsync(HttpContext context, Exception exception)
+        {
+            _logger.LogError(exception, $"Exception Message: {exception.Message} {Environment.NewLine}" +
+                            $"Http Request Information: {Environment.NewLine}" +
+                            $"Schema: {context.Request.Scheme} " +
+                            $"Host: {context.Request.Host} " +
+                            $"Path: {context.Request.Path} " +
+                            $"QueryString: {context.Request.QueryString} {Environment.NewLine}" +
+                            $"Request Body: {await GetRequestBodyAsync(context)}");
+        }
+
+        private async Task<string> GetRequestBodyAsync(HttpContext context)
+        {
+            var request = context.Request;
+            string body = string.Empty;
+
+            if (request.HasFormContentType && request.Form.Any())
+            {
+                var dictionary = request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
+                body = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
+            }
+            else
+            {
+                request.Body.Position = 0;
+                StreamReader reader = new StreamReader(request.Body);
+                body = await reader.ReadToEndAsync();
+                request.Body.Position = 0;
+            }
+
+            return body;
+        }
 
         private List<ValidationError> GetValidationErrors(IDictionary<string, string[]> errors)
         {
