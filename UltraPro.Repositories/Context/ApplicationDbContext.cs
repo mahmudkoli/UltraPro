@@ -24,7 +24,8 @@ namespace UltraPro.Repositories.Context
         private readonly IDateTime _dateTime;
 
         // Add DbSet here
-        public DbSet<Audit> Audits { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<RequestResponseLog> RequestResponseLogs { get; set; }
         public DbSet<SingleValueType> SingleValueTypes { get; set; }
         public DbSet<SingleValueDetail> SingleValueDetails { get; set; }
 
@@ -92,7 +93,7 @@ namespace UltraPro.Repositories.Context
 
             foreach (var entry in ChangeTracker.Entries())
             {
-                if (entry.Entity is Audit || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+                if (entry.Entity is AuditLog || entry.Entity is RequestResponseLog || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
                     continue;
 
                 var auditEntry = new AuditEntry(entry);
@@ -144,7 +145,7 @@ namespace UltraPro.Repositories.Context
             // Save audit entities that have all the modifications
             foreach (var auditEntry in auditEntries.Where(_ => !_.HasTemporaryProperties))
             {
-                Audits.Add(auditEntry.ToAudit());
+                AuditLogs.Add(auditEntry.ToAudit());
             }
 
             // keep a list of entries where the value of some properties are unknown at this step
@@ -172,7 +173,7 @@ namespace UltraPro.Repositories.Context
                 }
 
                 // Save the Audit entry
-                Audits.Add(auditEntry.ToAudit());
+                AuditLogs.Add(auditEntry.ToAudit());
             }
 
             return SaveChangesAsync();

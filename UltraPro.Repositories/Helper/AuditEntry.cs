@@ -28,9 +28,9 @@ namespace UltraPro.Repositories.Helper
 
         public bool HasTemporaryProperties => TemporaryProperties.Any();
 
-        public Audit ToAudit()
+        public AuditLog ToAudit()
         {
-            var audit = new Audit();
+            var audit = new AuditLog();
             audit.Id = Guid.NewGuid();
             audit.UserId = UserId;
             audit.Type = AuditType;

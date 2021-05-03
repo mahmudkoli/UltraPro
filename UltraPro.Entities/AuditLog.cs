@@ -7,7 +7,7 @@ using UltraPro.Common.Enums;
 
 namespace UltraPro.Entities
 {
-    public class Audit
+    public class AuditLog
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }

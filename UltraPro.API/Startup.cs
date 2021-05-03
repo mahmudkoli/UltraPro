@@ -146,6 +146,17 @@ namespace UltraPro.API
                 };
             });
 
+            // Add detection services container and device resolver service.
+            services.AddDetection();
+
+            // Needed by Wangkanai Detection
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -250,7 +261,11 @@ namespace UltraPro.API
                 c.RoutePrefix = "UltraPro";
             });
 
+            app.UseDetection();
+
             app.UseRouting();
+
+            app.UseSession();
 
             // Enable Authentication
             app.UseAuthentication();

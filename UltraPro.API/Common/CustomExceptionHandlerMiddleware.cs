@@ -82,13 +82,14 @@ namespace UltraPro.API.Common
 
         private async Task WriteExceptionAsync(HttpContext context, Exception exception)
         {
-            _logger.LogError(exception, $"Exception Message: {exception.Message} {Environment.NewLine}" +
+            _logger.LogError(exception, $"Exception Handler Exception Message: {exception.Message} {Environment.NewLine}" +
                             $"Http Request Information: {Environment.NewLine}" +
                             $"Scheme: {context.Request.Scheme} " +
                             $"Host: {context.Request.Host} " +
                             $"Path: {context.Request.Path} " +
                             $"QueryString: {context.Request.QueryString} {Environment.NewLine}" +
-                            $"Request Body: {await GetRequestBodyAsync(context.Request)}");
+                            $"ContentType: {context.Request.ContentType} {Environment.NewLine}" +
+                            $"Payload: {await GetRequestBodyAsync(context.Request)}");
         }
 
         private async Task<string> GetRequestBodyAsync(HttpRequest request)

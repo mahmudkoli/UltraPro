@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System;
@@ -9,16 +10,37 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using UltraPro.Common.Services;
+using UltraPro.Entities;
+using UltraPro.Services.Interfaces;
+using Wangkanai.Detection.Services;
 
 namespace UltraPro.API.Common
 {
     public class RequestResponseLoggingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<RequestResponseLoggingMiddleware> _logger;
+        private readonly IDetectionService _detectionService;
+        private readonly IRequestResponseLogService _requestResponseLogService;
+        private readonly ICurrentUserService _currentUserService;
+        private readonly IDateTime _dateTime;
 
-        public RequestResponseLoggingMiddleware(RequestDelegate next)
+        public RequestResponseLoggingMiddleware(
+            RequestDelegate next,
+            ILogger<RequestResponseLoggingMiddleware> logger,
+            IDetectionService detectionService,
+            IRequestResponseLogService requestResponseLogService,
+            ICurrentUserService currentUserService,
+            IDateTime dateTime
+            )
         {
             _next = next;
+            _logger = logger;
+            _detectionService = detectionService;
+            _requestResponseLogService = requestResponseLogService;
+            _currentUserService = currentUserService;
+            _dateTime = dateTime;
         }
 
         public async Task Invoke(HttpContext context)
@@ -26,9 +48,14 @@ namespace UltraPro.API.Common
             //Create a log
             var log = new RequestResponseLog
             {
+                Id = Guid.NewGuid(),
+                UserId = _currentUserService.UserId,
+                Scheme = context.Request.Scheme,
+                Host = context.Request.Host.ToString(),
                 Path = context.Request.Path,
+                QueryString = context.Request.QueryString.ToString(),
                 Method = context.Request.Method,
-                QueryString = context.Request.QueryString.ToString()
+                ContentType = context.Request.ContentType
             };
 
             await this.LogRequest(context, log);
@@ -67,10 +94,8 @@ namespace UltraPro.API.Common
                         log.RespondedOn = DateTime.Now;
 
                         //TODO: Save log to database
-                        var temp = log;
-                        var userAgent = context.Request.Headers[HeaderNames.UserAgent].ToString();
-                        var acceptLanguage = context.Request.Headers[HeaderNames.AcceptLanguage].ToString();
-                        var remoteIpAddress = context.Connection.RemoteIpAddress?.ToString();
+                        await this.LogClientInformaionAsync(context, log);
+                        var result = await _requestResponseLogService.AddAsync(log);
 
                         //Copy the contents of the new memory stream (which contains the response) to the original stream,...
                         //...which is then returned to the client.
@@ -79,7 +104,7 @@ namespace UltraPro.API.Common
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    _logger.LogError(ex, $"Request Response Logging Exception Message: {ex.Message}");
                 }
                 finally
                 {
@@ -87,6 +112,20 @@ namespace UltraPro.API.Common
                     context.Response.Body = originalResponseBody;
                 }
             }
+        }
+
+        private async Task LogClientInformaionAsync(HttpContext context, RequestResponseLog log)
+        {
+            var userAgent = context.Request.Headers[HeaderNames.UserAgent].ToString();
+            var acceptLanguage = context.Request.Headers[HeaderNames.AcceptLanguage].ToString();
+            var remoteIpAddress = context.Connection.RemoteIpAddress?.ToString();
+
+            var userAgentInfo = _detectionService.UserAgent;
+            var device = _detectionService.Device;
+            var platform = _detectionService.Platform;
+            var engine = _detectionService.Engine;
+            var browser = _detectionService.Browser;
+            var crawler = _detectionService.Crawler;
         }
 
         private async Task<string> GetRequestBodyAsync(HttpRequest request)
@@ -117,18 +156,5 @@ namespace UltraPro.API.Common
         {
             return builder.UseMiddleware<RequestResponseLoggingMiddleware>();
         }
-    }
-
-    public class RequestResponseLog
-    {
-        public string Path { get; set; }
-        public string QueryString { get; set; }
-        public string Method { get; set; }
-        public string Payload { get; set; }
-        public string Response { get; set; }
-        public int ResponseCode { get; set; }
-        public DateTime RequestedOn { get; set; }
-        public DateTime RespondedOn { get; set; }
-        public bool IsSuccessStatusCode { get; set; }
     }
 }

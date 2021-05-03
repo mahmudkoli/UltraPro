@@ -9,9 +9,9 @@ using UltraPro.Entities;
 
 namespace UltraPro.Repositories.Configurations
 {
-    public class AuditConfiguration : IEntityTypeConfiguration<Audit>
+    public class AuditLogConfiguration : IEntityTypeConfiguration<AuditLog>
     {
-        public void Configure(EntityTypeBuilder<Audit> builder)
+        public void Configure(EntityTypeBuilder<AuditLog> builder)
         {
             builder.Property(x => x.TableName)
                 .IsRequired()
