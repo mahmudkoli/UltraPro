@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Serilog.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,7 @@ using UltraPro.API.Core;
 using UltraPro.API.Filters;
 using UltraPro.API.Models.IdentityModels;
 using UltraPro.API.Services;
+using UltraPro.Common.Constants;
 using UltraPro.Common.Services;
 using UltraPro.Entities;
 using UltraPro.Repositories.Context;
@@ -43,8 +45,8 @@ namespace UltraPro.API
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName ?? "Production"}.json", optional: true)
                 .AddEnvironmentVariables();
             this.Configuration = builder.Build();
         }
@@ -270,6 +272,13 @@ namespace UltraPro.API
             // Enable Authentication
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.Use(async (httpContext, next) =>
+            {
+                var userName = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : "Guest";
+                LogContext.PushProperty(ConstantsApplication.SerilogMSSqlServerAdditionalColumnUserName, userName);
+                await next.Invoke();
+            });
 
             app.UseEndpoints(endpoints =>
             {
