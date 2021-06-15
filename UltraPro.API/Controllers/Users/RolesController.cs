@@ -36,114 +36,59 @@ namespace UltraPro.API.Controllers.Users
         [Authorize(Permissions.UserRoles.ListView)]
         public async Task<IActionResult> Get([FromQuery] UserRoleQuery query)
         {
-            try
-            {
-                var result = await _applicationRoleService.GetAllAsync(query);
-                var queryResult = _mapper.Map<QueryResult<ApplicationRole>, QueryResult<UserRoleModel>>(result);
-                return OkResult(queryResult);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _applicationRoleService.GetAllAsync(query);
+            var queryResult = _mapper.Map<QueryResult<ApplicationRole>, QueryResult<UserRoleModel>>(result);
+            return OkResult(queryResult);
         }
 
         [HttpGet("{id}")]
         [Authorize(Permissions.UserRoles.DetailsView)]
         public async Task<IActionResult> Get(Guid id)
         {
-            try
-            {
-                var role = await _applicationRoleService.GetByIdAsync(id);
-                var result = _mapper.Map<ApplicationRole, UserRoleModel>(role.ApplicationRole);
-                result.Permissions = role.Permissions;
-                return OkResult(result);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var role = await _applicationRoleService.GetByIdAsync(id);
+            var result = _mapper.Map<ApplicationRole, UserRoleModel>(role.ApplicationRole);
+            result.Permissions = role.Permissions;
+            return OkResult(result);
         }
 
         [HttpPost]
         [Authorize(Permissions.UserRoles.Create)]
         public async Task<IActionResult> Create([FromBody] SaveUserRoleModel model)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return ValidationResult(ModelState);
-
-                var role = _mapper.Map<SaveUserRoleModel, ApplicationRole>(model);
-                var result = await _applicationRoleService.AddAsync(role, model.Permissions);
-                return OkResult(result);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var role = _mapper.Map<SaveUserRoleModel, ApplicationRole>(model);
+            var result = await _applicationRoleService.AddAsync(role, model.Permissions);
+            return OkResult(result);
         }
 
         [HttpPut("{id}")]
         [Authorize(Permissions.UserRoles.Edit)]
         public async Task<IActionResult> Update(Guid id, [FromBody] SaveUserRoleModel model)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return ValidationResult(ModelState);
-
-                var role = _mapper.Map<SaveUserRoleModel, ApplicationRole>(model);
-                await _applicationRoleService.UpdateAsync(role, model.Permissions);
-                return OkResult(true);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var role = _mapper.Map<SaveUserRoleModel, ApplicationRole>(model);
+            var result = await _applicationRoleService.UpdateAsync(role, model.Permissions);
+            return OkResult(result);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Permissions.UserRoles.Delete)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            try
-            {
-                await _applicationRoleService.DeleteAsync(id);
-                return OkResult(true);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _applicationRoleService.DeleteAsync(id);
+            return OkResult(result);
         }
 
         [HttpPost("activeInactive/{id}")]
         public async Task<IActionResult> ActiveInactive(Guid id)
         {
-            try
-            {
-                await _applicationRoleService.ActiveInactiveAsync(id);
-                return OkResult(true);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _applicationRoleService.ActiveInactiveAsync(id);
+            return OkResult(result);
         }
 
         [HttpGet("select")]
         public async Task<IActionResult> GetSelect()
         {
-            try
-            {
-                var result = await _applicationRoleService.GetAllForSelectAsync();
-                return OkResult(result);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _applicationRoleService.GetAllForSelectAsync();
+            return OkResult(result);
         }
     }
 }

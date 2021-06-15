@@ -40,173 +40,90 @@ namespace UltraPro.API.Controllers.Users
         [Authorize(Permissions.Users.ListView)]
         public async Task<IActionResult> Get([FromQuery] UserQuery query)
         {
-            try
-            {
-                var result = await _applicationUserService.GetAllAsync(query);
-                var queryResult = _mapper.Map<QueryResult<ApplicationUser>, QueryResult<UserModel>>(result);
-                return OkResult(queryResult);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _applicationUserService.GetAllAsync(query);
+            var queryResult = _mapper.Map<QueryResult<ApplicationUser>, QueryResult<UserModel>>(result);
+            return OkResult(queryResult);
         }
 
         [HttpGet("except-app-users")]
         [Authorize(Permissions.Users.ListView)]
         public async Task<IActionResult> GetExceptAppUsers([FromQuery] UserQuery query)
         {
-            try
-            {
-                var result = await _applicationUserService.GetAllExceptAppUsersAsync(query);
-                var queryResult = _mapper.Map<QueryResult<ApplicationUser>, QueryResult<UserModel>>(result);
-                return OkResult(queryResult);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _applicationUserService.GetAllExceptAppUsersAsync(query);
+            var queryResult = _mapper.Map<QueryResult<ApplicationUser>, QueryResult<UserModel>>(result);
+            return OkResult(queryResult);
         }
 
         [HttpGet("app-users")]
         [Authorize(Permissions.Users.ListView)]
         public async Task<IActionResult> GetAppUsers([FromQuery] UserQuery query)
         {
-            try
-            {
-                var result = await _applicationUserService.GetAllAppUsersAsync(query);
-                var queryResult = _mapper.Map<QueryResult<ApplicationUser>, QueryResult<UserModel>>(result);
-                return OkResult(queryResult);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _applicationUserService.GetAllAppUsersAsync(query);
+            var queryResult = _mapper.Map<QueryResult<ApplicationUser>, QueryResult<UserModel>>(result);
+            return OkResult(queryResult);
         }
 
         [HttpGet("{id}")]
         [Authorize(Permissions.Users.DetailsView)]
         public async Task<IActionResult> Get(Guid id)
         {
-            try
-            {
-                var user = await _applicationUserService.GetByIdAsync(id);
-                var result = _mapper.Map<ApplicationUser, UserModel>(user);
-                return OkResult(result);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var user = await _applicationUserService.GetByIdAsync(id);
+            var result = _mapper.Map<ApplicationUser, UserModel>(user);
+            return OkResult(result);
         }
 
         [HttpPost]
         [Authorize(Permissions.Users.Create)]
         public async Task<IActionResult> Create([FromBody] SaveUserModel model)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return ValidationResult(ModelState);
-
-                var user = _mapper.Map<SaveUserModel, ApplicationUser>(model);
-                var result = await _applicationUserService.AddAsync(user, model.UserRoleId, _appSettings.UserDefaultPassword);
-                return OkResult(result);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var user = _mapper.Map<SaveUserModel, ApplicationUser>(model);
+            var result = await _applicationUserService.AddAsync(user, model.UserRoleId, _appSettings.UserDefaultPassword);
+            return OkResult(result);
         }
 
         [HttpPut("{id}")]
         [Authorize(Permissions.Users.Edit)]
         public async Task<IActionResult> Update(Guid id, [FromBody] SaveUserModel model)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return ValidationResult(ModelState);
-
-                var user = _mapper.Map<SaveUserModel, ApplicationUser>(model);
-                await _applicationUserService.UpdateAsync(user, model.UserRoleId);
-                return OkResult(true);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var user = _mapper.Map<SaveUserModel, ApplicationUser>(model);
+            var result = await _applicationUserService.UpdateAsync(user, model.UserRoleId);
+            return OkResult(result);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Permissions.Users.Delete)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            try
-            {
-                await _applicationUserService.DeleteAsync(id);
-                return OkResult(true);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _applicationUserService.DeleteAsync(id);
+            return OkResult(result);
         }
 
         [HttpPost("activeInactive/{id}")]
         public async Task<IActionResult> ActiveInactive(Guid id)
         {
-            try
-            {
-                await _applicationUserService.ActiveInactiveAsync(id);
-                return OkResult(true);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _applicationUserService.ActiveInactiveAsync(id);
+            return OkResult(result);
         }
 
         [HttpGet("select")]
         public async Task<IActionResult> GetSelect()
         {
-            try
-            {
-                var result = await _applicationUserService.GetAllForSelectAsync();
-                return OkResult(result);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _applicationUserService.GetAllForSelectAsync();
+            return OkResult(result);
         }
 
         [HttpGet("select/except-app-users")]
         public async Task<IActionResult> GetSelectExceptAppUsers()
         {
-            try
-            {
-                var result = await _applicationUserService.GetAllExceptAppUsersForSelectAsync();
-                return OkResult(result);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _applicationUserService.GetAllExceptAppUsersForSelectAsync();
+            return OkResult(result);
         }
 
         [HttpGet("select/app-users")]
         public async Task<IActionResult> GetSelectAppUsers()
         {
-            try
-            {
-                var result = await _applicationUserService.GetAllAppUsersForSelectAsync();
-                return OkResult(result);
-            }
-            catch (Exception ex)
-            {
-                return ExceptionResult(ex);
-            }
+            var result = await _applicationUserService.GetAllAppUsersForSelectAsync();
+            return OkResult(result);
         }
     }
 }

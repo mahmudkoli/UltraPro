@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -10,11 +12,16 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using System.Transactions;
 using UltraPro.API.Core;
 using UltraPro.API.Models;
+using UltraPro.Common.Constants;
+using UltraPro.Common.Enums;
 using UltraPro.Common.Services;
 using UltraPro.Entities;
+using UltraPro.Services.Exceptions;
 using UltraPro.Services.Interfaces;
 
 namespace UltraPro.API.Services
@@ -28,6 +35,7 @@ namespace UltraPro.API.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IMapper _mapper;
+        private readonly IMailerService _mailerService;
 
         public AuthenticationService(
             ICurrentUserService currentUserService,
@@ -36,6 +44,7 @@ namespace UltraPro.API.Services
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             IOptions<AppSettings> appSettings,
+            IMailerService mailerService,
             IMapper mapper)
         {
             _appSettings = appSettings.Value;
@@ -45,6 +54,146 @@ namespace UltraPro.API.Services
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
+            _mailerService = mailerService;
+        }
+
+        public async Task<ApplicationUser> AuthenticatePortalAsync(ApiLoginModel model)
+        {
+            var user = await this._userManager.FindByNameAsync(model.UserName);
+            if (user == null) throw new ValidationException("UserName or password is invalid.");
+
+            var isValidUser = await _userManager.CheckPasswordAsync(user, model.Password);
+            if (!isValidUser)
+            {
+                user.AccessFailedCount += 1;
+                var result = await _userManager.UpdateAsync(user); 
+                
+                throw new ValidationException("UserName or password is invalid.");
+            }
+
+            return user;
+        }
+        
+        public async Task<ApplicationUser> AuthenticateAppAsync(ApiAppLoginModel model, HttpContext context)
+        {
+            var header = context.Request?.Headers[nameof(_appSettings.AppHeaderSecretKey)];
+
+            if (!header.HasValue || !header.Equals(_appSettings.AppHeaderSecretKey)) throw new ValidationException("Invalid request.");
+
+            var user = await this._userManager.FindByNameAsync(model.PhoneNumber);
+            if (user == null) throw new ValidationException("Phone Number or password is invalid.");
+
+            var isValidUser = await _userManager.CheckPasswordAsync(user, model.Password);
+            if (!isValidUser)
+            {
+                user.AccessFailedCount += 1;
+                var result = await _userManager.UpdateAsync(user);
+
+                throw new ValidationException("Phone Number or password is invalid.");
+            }
+
+            return user;
+        }
+        
+        public async Task<ApplicationUser> RegistrationAppAsync(ApiAppRegistrationModel model, HttpContext context)
+        {
+            var headerSK = context.Request?.Headers[nameof(_appSettings.AppHeaderSecretKey)];
+
+            if (!headerSK.HasValue || !headerSK.Equals(_appSettings.AppHeaderSecretKey)) throw new ValidationException("Invalid request.");
+
+            var user = _mapper.Map<ApiAppRegistrationModel, ApplicationUser>(model);
+
+            #region registration
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                try
+                {
+                    var existingUser = (await _userManager.FindByNameAsync(user.UserName));
+                    if (existingUser != null && !existingUser.IsDeleted)
+                        throw new DuplicationException(nameof(user.PhoneNumber));
+
+                    user.Status = EnumApplicationUserStatus.GeneralUser;
+                    user.Created = _dateTime.Now;
+                    var userSaveResult = await _userManager.CreateAsync(user, model.Password);
+
+                    if (!userSaveResult.Succeeded) throw new IdentityValidationException(userSaveResult.Errors);
+
+                    // Add New User Role
+                    var userRoleName = ConstantsUserRole.AppUser;
+                    var role = await _roleManager.FindByNameAsync(userRoleName);
+
+                    if (role == null) throw new NotFoundException(nameof(ApplicationRole), userRoleName);
+
+                    var roleSaveResult = await _userManager.AddToRoleAsync(user, role.Name);
+
+                    if (!roleSaveResult.Succeeded) throw new IdentityValidationException(roleSaveResult.Errors);
+
+                    scope.Complete();
+                }
+                catch (Exception ex)
+                {
+                    scope.Dispose();
+                    throw;
+                }
+            }
+            #endregion
+
+            user = await this._userManager.FindByNameAsync(user.UserName);
+
+            return user;
+        }
+
+        public async Task<bool> ChangePasswordAppAsync(ApiAppChangePasswordModel model, HttpContext context)
+        {
+            var header = context.Request?.Headers[nameof(_appSettings.AppHeaderSecretKey)];
+
+            if (!header.HasValue || !header.Equals(_appSettings.AppHeaderSecretKey)) throw new ValidationException("Invalid request.");
+
+            var user = await this._userManager.FindByNameAsync(model.PhoneNumber);
+            if (user == null) throw new ValidationException("Phone Number or current password is invalid.");
+
+            var isValidUser = await _userManager.CheckPasswordAsync(user, model.CurrentPassword);
+            if (!isValidUser) throw new ValidationException("Phone Number or current password is invalid.");
+
+            user.PasswordChangedCount = user.PasswordChangedCount + 1;
+            await _userManager.UpdateAsync(user);
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+
+            if (!result.Succeeded) throw new IdentityValidationException(result.Errors);
+
+            return true;
+        }
+
+        public async Task<bool> ForgotPasswordPortalAsync(string email)
+        {
+            var user = await this._userManager.FindByEmailAsync(email);
+            if (user == null) throw new ValidationException("Email is invalid.");
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            var callbackUrl = $"{this._appSettings.ResetPasswordUrl}?userId={user.Id}&token={token}";
+
+            //email = "mahmud.koli@brainstation23.com";
+            await _mailerService.SendEmailAsync(email, "Forgot Password",
+                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            return true;
+        }
+
+        public async Task<bool> ResetPasswordPortalAsync(ApiResetPasswordModel model)
+        {
+            var user = await this._userManager.FindByIdAsync(model.UserId.ToString());
+            if (user == null) throw new ValidationException("User Id or token is invalid.");
+
+            var token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(model.Token));
+
+            var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+            if (!result.Succeeded) throw new ValidationException("User Id or token is invalid.");
+
+            return true;
         }
 
         public async Task<ApiAuthenticateUserModel> AuthenticateTokenAsync(ApplicationUser user, HttpContext context, HttpRequest request, HttpResponse response)

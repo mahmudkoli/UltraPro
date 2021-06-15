@@ -33,5 +33,17 @@ namespace UltraPro.API.Models.IdentityModels
             //public const string CreateOrEdit = "Permissions.SingleValue.CreateOrEdit";
             public const string Delete = "Permissions.SingleValue.Delete";
         }
+
+        public static class RequestResponseLogs
+        {
+            public const string ListView = "Permissions.RequestResponseLog.ListView";
+            public const string DetailsView = "Permissions.RequestResponseLog.DetailsView";
+        }
+
+        public static class AuditLogs
+        {
+            public const string ListView = "Permissions.AuditLog.ListView";
+            public const string DetailsView = "Permissions.AuditLog.DetailsView";
+        }
     }
 }

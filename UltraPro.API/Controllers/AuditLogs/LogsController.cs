@@ -16,7 +16,7 @@ using UltraPro.API.Models.Logs;
 
 namespace UltraPro.API.Controllers.SingleValue
 {
-    //[Authorize]
+    [Authorize]
     //[ApiExplorerSettings(IgnoreApi = true)]
     [ApiVersion("1")]
     [Route("api/v{v:apiVersion}/logs")]
@@ -37,7 +37,7 @@ namespace UltraPro.API.Controllers.SingleValue
         }
 
         [HttpGet("RequestResponseLogs")]
-        //[Authorize(Permissions.SingleValue.ListView)]
+        [Authorize(Permissions.RequestResponseLogs.ListView)]
         public async Task<IActionResult> GetRequestResponseLogs([FromQuery] RequestResponseLogQuery query)
         {
             var result = await _requestResponseLogService.GetAllAsync(query);
@@ -46,7 +46,7 @@ namespace UltraPro.API.Controllers.SingleValue
         }
 
         [HttpGet("RequestResponseLog/{id}")]
-        //[Authorize(Permissions.SingleValue.DetailsView)]
+        [Authorize(Permissions.RequestResponseLogs.DetailsView)]
         public async Task<IActionResult> GetRequestResponseLog(Guid id)
         {
             var requestResponseLog = await _requestResponseLogService.GetByIdAsync(id);
@@ -55,7 +55,7 @@ namespace UltraPro.API.Controllers.SingleValue
         }
 
         [HttpGet("AuditLogs")]
-        //[Authorize(Permissions.SingleValue.ListView)]
+        [Authorize(Permissions.AuditLogs.ListView)]
         public async Task<IActionResult> GetAuditLogs([FromQuery] AuditLogQuery query)
         {
             var result = await _auditLogService.GetAllAsync(query);
@@ -64,7 +64,7 @@ namespace UltraPro.API.Controllers.SingleValue
         }
 
         [HttpGet("AuditLog/{id}")]
-        //[Authorize(Permissions.SingleValue.DetailsView)]
+        [Authorize(Permissions.AuditLogs.DetailsView)]
         public async Task<IActionResult> GetAuditLog(Guid id)
         {
             var auditLog = await _auditLogService.GetByIdAsync(id);

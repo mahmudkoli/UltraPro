@@ -54,9 +54,9 @@ namespace UltraPro.API.Services
                     await client.DisconnectAsync(true);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw new InvalidOperationException(e.Message);
+                throw new InvalidOperationException(ex.Message);
             }
         }
     }
