@@ -25,12 +25,14 @@ namespace UltraPro.Entities
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
         public IList<ApplicationUserRole> UserRoles { get; set; }
+        public IList<RefreshToken> RefreshTokens { get; set; }
 
         public ApplicationUser() : base()
         {
             this.IsActive = true;
             this.IsDeleted = false;
             this.UserRoles = new List<ApplicationUserRole>();
+            this.RefreshTokens = new List<RefreshToken>();
         }
     }
 }

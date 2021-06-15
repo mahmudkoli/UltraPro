@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UltraPro.API.Services;
 using UltraPro.Repositories.Implements.AuditLogs;
+using UltraPro.Repositories.Implements.RefreshTokens;
 using UltraPro.Repositories.Implements.RequestResponseLogs;
 using UltraPro.Repositories.Implements.SingleValue;
 using UltraPro.Repositories.Interfaces.AuditLogs;
+using UltraPro.Repositories.Interfaces.RefreshTokens;
 using UltraPro.Repositories.Interfaces.RequestResponseLogs;
 using UltraPro.Repositories.Interfaces.SingleValue;
 using UltraPro.Services.Implements;
@@ -54,6 +57,16 @@ namespace UltraPro.API
             builder.RegisterType<AuditLogRepository>().As<IAuditLogRepository>()
                    .InstancePerLifetimeScope();
             builder.RegisterType<AuditLogUnitOfWork>().As<IAuditLogUnitOfWork>()
+                   .InstancePerLifetimeScope();
+
+            builder.RegisterType<RefreshTokenService>().As<IRefreshTokenService>()
+                   .InstancePerLifetimeScope();
+            builder.RegisterType<RefreshTokenUnitOfWork>().As<IRefreshTokenUnitOfWork>()
+                   .InstancePerLifetimeScope();
+            builder.RegisterType<RefreshTokenRepository>().As<IRefreshTokenRepository>()
+                   .InstancePerLifetimeScope();
+
+            builder.RegisterType<AuthenticationService>().As<IAuthenticationService>()
                    .InstancePerLifetimeScope();
 
             base.Load(builder);

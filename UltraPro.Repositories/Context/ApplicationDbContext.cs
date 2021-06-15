@@ -26,6 +26,7 @@ namespace UltraPro.Repositories.Context
         // Add DbSet here
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<RequestResponseLog> RequestResponseLogs { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<SingleValueType> SingleValueTypes { get; set; }
         public DbSet<SingleValueDetail> SingleValueDetails { get; set; }
 

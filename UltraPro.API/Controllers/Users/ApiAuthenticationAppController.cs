@@ -20,6 +20,8 @@ using UltraPro.Services.Interfaces;
 using UltraPro.Common.Enums;
 using System.Transactions;
 using UltraPro.Common.Services;
+using Microsoft.AspNetCore.Http;
+using UltraPro.API.Services;
 
 namespace UltraPro.API.Controllers.Users
 {
@@ -30,6 +32,7 @@ namespace UltraPro.API.Controllers.Users
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly IAuthenticationService _authenticationService;
         private readonly IDateTime _dateTime;
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
@@ -38,11 +41,13 @@ namespace UltraPro.API.Controllers.Users
             IOptionsSnapshot<AppSettings> options,
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
+            IAuthenticationService authenticationService,
             IDateTime dateTime,
             IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _authenticationService = authenticationService;
             _dateTime = dateTime;
             _mapper = mapper;
             _appSettings = options.Value;
@@ -82,10 +87,7 @@ namespace UltraPro.API.Controllers.Users
                     return ValidationResult(ModelState);
                 }
 
-                var authUser = _mapper.Map<ApplicationUser, ApiAuthenticateUserModel>(user);
-
-                // authentication successful so generate jwt token
-                authUser.Token = await this.BuildToken(user);
+                var authUser = await _authenticationService.AuthenticateTokenAsync(user, HttpContext, Request, Response);
 
                 return OkResult(authUser);
             }
@@ -160,10 +162,7 @@ namespace UltraPro.API.Controllers.Users
 
                 user = await this._userManager.FindByNameAsync(user.UserName);
 
-                var authUser = _mapper.Map<ApplicationUser, ApiAuthenticateUserModel>(user);
-
-                // authentication successful so generate jwt token
-                authUser.Token = await this.BuildToken(user);
+                var authUser = await _authenticationService.AuthenticateTokenAsync(user, HttpContext, Request, Response);
 
                 return OkResult(authUser);
             }
@@ -223,43 +222,35 @@ namespace UltraPro.API.Controllers.Users
             }
         }
 
-        private async Task<string> BuildToken(ApplicationUser user)
+        [AllowAnonymous]
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshTokenAsync()
         {
-            // authentication successful so generate jwt token
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(this._appSettings.TokenSecretKey);
-
-            var claims = new List<Claim>()
+            try
             {
-                //new Claim(ClaimTypes.Name, user.Id.ToString())
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email??string.Empty),
-                new Claim(ClaimTypes.Name, user.UserName??string.Empty)
-            };
+                var response = await _authenticationService.RefreshTokenAsync(HttpContext,Request, Response);
 
-            var userRoles = await _userManager.GetRolesAsync(user);
-            foreach (var userRole in userRoles)
-            {
-                var role = await _roleManager.FindByNameAsync(userRole);
-                if (role == null) { continue; }
-                claims.Add(new Claim(ClaimTypes.Role, role.Name));
-
-                var roleClaims = await _roleManager.GetClaimsAsync(role);
-                foreach (Claim roleClaim in roleClaims)
-                {
-                    claims.Add(roleClaim);
-                }
+                return OkResult(response);
             }
-
-            var tokenDescriptor = new SecurityTokenDescriptor
+            catch (Exception ex)
             {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(this._appSettings.TokenExpiresHours),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+                return ExceptionResult(ex);
+            }
+        }
 
-            return tokenHandler.WriteToken(token);
+        [HttpPost("revoke-token")]
+        public async Task<IActionResult> RevokeTokenAsync([FromBody] ApiAppRevokeTokenModel model)
+        {
+            try 
+            {
+                var response = await _authenticationService.RevokeTokenAsync(model, HttpContext, Request);
+
+                return OkResult(response);
+            }
+            catch (Exception ex)
+            {
+                return ExceptionResult(ex);
+            }
         }
     }
 }

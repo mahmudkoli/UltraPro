@@ -4,6 +4,7 @@ using AutoMapper;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace UltraPro.API.Models
 {
@@ -35,7 +36,6 @@ namespace UltraPro.API.Models
         public bool RememberMe { get; set; }
     }
 
-
     public class ApiAppChangePasswordModel
     {
         [Required]
@@ -45,7 +45,6 @@ namespace UltraPro.API.Models
         public string CurrentPassword { get; set; }
         [Required]
         public string NewPassword { get; set; }
-
     }
 
     public class ApiAppRegistrationModel : IMapFrom<ApplicationUser>
@@ -80,8 +79,10 @@ namespace UltraPro.API.Models
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string ImageUrl { get; set; }
-        public string Token { get; set; }
+        public string JwtToken { get; set; }
         public Guid UserRoleId { get; set; }
+        [JsonIgnore] // refresh token is returned in http only cookie
+        public string RefreshToken { get; set; }
 
         public void Mapping(Profile profile)
         {
@@ -89,5 +90,10 @@ namespace UltraPro.API.Models
                 .ForMember(dest => dest.UserRoleId, opt => opt.MapFrom(src => 
                     src.UserRoles != null && src.UserRoles.Any() ? src.UserRoles.FirstOrDefault().RoleId : Guid.Empty));
         }
+    }
+
+    public class ApiAppRevokeTokenModel
+    {
+        public string Token { get; set; }
     }
 }
