@@ -46,6 +46,7 @@ namespace UltraPro.API.Models.IdentityModels
             var user = await _userManager.FindByIdAsync(userId);
             var userRoleNames = await _userManager.GetRolesAsync(user);
             var userRoles = _roleManager.Roles.Where(x => userRoleNames.Contains(x.Name));
+            //TODO: Need to update IgnoreQueryFilters
             //var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
             //var guidUserId = Guid.Empty;
             //if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out guidUserId)) return;

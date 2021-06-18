@@ -15,6 +15,7 @@ namespace UltraPro.Repositories.Configurations
     {
         public void Configure(EntityTypeBuilder<ApplicationRole> builder)
         {
+            //TODO: Need to update IgnoreQueryFilters
             //builder.HasQueryFilter(x => !x.IsDeleted && x.Status != EnumApplicationRoleStatus.SuperAdmin);
             builder.HasQueryFilter(x => !x.IsDeleted);
             builder.Property(x => x.Name)

@@ -13,7 +13,7 @@ namespace UltraPro.Repositories.Extensions
     {
         public static void ApplyGlobalFilters<TInterface>(this ModelBuilder modelBuilder, Expression<Func<TInterface, bool>> expression)
         {
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes().Where(entityType => typeof(TInterface).IsAssignableFrom(entityType.ClrType)))
             {
                 if (entityType.ClrType.GetInterface(typeof(TInterface).Name) != null)
                 {

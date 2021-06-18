@@ -37,6 +37,7 @@ namespace UltraPro.API.Services
         private readonly IMapper _mapper;
         private readonly IMailerService _mailerService;
 
+        //TODO: Need to update IgnoreQueryFilters
         public AuthenticationService(
             ICurrentUserService currentUserService,
             IDateTime dateTime,
