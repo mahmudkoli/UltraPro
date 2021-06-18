@@ -16,7 +16,7 @@ namespace UltraPro.Repositories.Core
 {
     public abstract class Repository<TEntity, TKey, TContext>
         : IRepository<TEntity, TKey, TContext>
-        where TEntity : class
+        where TEntity : class, IKey<TKey>, new()
         where TContext : DbContext
     {
         #region CONFIG
@@ -32,12 +32,16 @@ namespace UltraPro.Repositories.Core
 
         #region LINQ Async
         public virtual async Task<IList<TResult>> GetAsync<TResult>(Expression<Func<TEntity, TResult>> selector,
-                            Expression<Func<TEntity, bool>> predicate = null,
+                            Expression<Func<TEntity, bool>> predicate,
                             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                            bool disableTracking = true)
+                            bool disableTracking = true,
+                            bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
 
             if (include != null)
                 query = include(query);
@@ -61,9 +65,13 @@ namespace UltraPro.Repositories.Core
                             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                             int pageIndex = 1, int pageSize = 10,
-                            bool disableTracking = true)
+                            bool disableTracking = true,
+                            bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
 
             int total = await query.CountAsync();
             int totalFilter = total;
@@ -92,9 +100,13 @@ namespace UltraPro.Repositories.Core
                             Expression<Func<TEntity, bool>> predicate = null,
                             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                            bool disableTracking = true)
+                            bool disableTracking = true,
+                            bool ignoreQueryFilters = true)
         {
             IQueryable<TEntity> query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
 
             if (include != null)
                 query = include(query);
@@ -113,14 +125,24 @@ namespace UltraPro.Repositories.Core
             return result;
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(object id)
-        {
-            return await _dbSet.FindAsync(id);
-        }
-
-        public virtual async Task<int> GetCountAsync(Expression<Func<TEntity, bool>> predicate = null)
+        public virtual async Task<TEntity> GetByIdAsync(TKey id, bool ignoreQueryFilters = false)
         {
             var query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
+
+            var result = await query.FirstOrDefaultAsync(x => x.Id.Equals(id));
+
+            return result;
+        }
+
+        public virtual async Task<int> GetCountAsync(Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false)
+        {
+            var query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
 
             if (predicate != null)
             {
@@ -130,9 +152,12 @@ namespace UltraPro.Repositories.Core
             return await query.CountAsync();
         }
 
-        public virtual async Task<long> GetSumAsync(Expression<Func<TEntity, long>> selector, Expression<Func<TEntity, bool>> predicate = null)
+        public virtual async Task<long> GetSumAsync(Expression<Func<TEntity, long>> selector, Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false)
         {
             var query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
 
             if (predicate != null)
             {
@@ -142,75 +167,146 @@ namespace UltraPro.Repositories.Core
             return await query.SumAsync(selector);
         }
 
-        public virtual async Task<bool> IsExistsAsync(Expression<Func<TEntity, bool>> predicate)
+        public virtual async Task<bool> IsExistsAsync(Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters = false)
         {
             var query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
 
             return await query.AnyAsync(predicate);
         }
 
         public virtual async Task AddAsync(TEntity entity)
         {
-            await _dbSet.AddAsync(entity);
+            var entry = _dbContext.Entry(entity);
+            _dbSet.Attach(entity);
+            entry.State = EntityState.Added;
         }
 
         public virtual async Task AddRangeAsync(IList<TEntity> entities)
         {
-            await _dbSet.AddRangeAsync(entities);
+            foreach (var entity in entities)
+            {
+                var entry = _dbContext.Entry(entity);
+                _dbSet.Attach(entity);
+                entry.State = EntityState.Added;
+            }
         }
 
         public virtual async Task UpdateAsync(TEntity entity)
         {
-            _dbSet.Attach(entity);
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            var entry = _dbContext.Entry(entity);
+            if (entry.State == EntityState.Detached)
+                _dbSet.Attach(entity);
+            entry.State = EntityState.Modified;
         }
 
         public virtual async Task UpdateRangeAsync(IList<TEntity> entities)
         {
-            _dbContext.UpdateRange(entities);
+            foreach (var entity in entities)
+            {
+                var entry = _dbContext.Entry(entity);
+                if (entry.State == EntityState.Detached)
+                    _dbSet.Attach(entity);
+                entry.State = EntityState.Modified;
+            }
         }
 
-        public virtual async Task DeleteAsync(object id)
+        public virtual async Task DeleteAsync(object id, bool hardDelete = false)
         {
             var entity = await _dbSet.FindAsync(id);
 
-            await DeleteAsync(entity);
+            await DeleteAsync(entity, hardDelete);
         }
 
-        public virtual async Task DeleteAsync(TEntity entity)
+        public virtual async Task DeleteAsync(TEntity entity, bool hardDelete = false)
         {
-            if (_dbContext.Entry(entity).State == EntityState.Detached)
-            {
+            var entry = _dbContext.Entry(entity);
+            if (entry.State == EntityState.Detached)
                 _dbSet.Attach(entity);
-            }
 
-            _dbSet.Remove(entity);
+            if (hardDelete)
+                entry.State = EntityState.Deleted;
+            else
+            {
+                //entity.GetType().GetProperty(nameof(IEntity.IsDeleted)).SetValue(entity, true);
+                //entry.Property(nameof(IEntity.IsDeleted)).CurrentValue = true;
+                if (entry.Entity is IEntity en)
+                    en.IsDeleted = true;
+                entry.State = EntityState.Modified;
+            }
         }
 
-        public virtual async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate)
+        public virtual async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool hardDelete = false)
         {
             var query = _dbSet.AsQueryable().Where(predicate);
 
-            if (query.Any())
+            foreach (var entity in query)
             {
-                _dbSet.RemoveRange(query);
+                var entry = _dbContext.Entry(entity);
+                if (entry.State == EntityState.Detached)
+                    _dbSet.Attach(entity);
+
+                if (hardDelete)
+                    entry.State = EntityState.Deleted;
+                else
+                {
+                    if (entry.Entity is IEntity en)
+                        en.IsDeleted = true;
+                    entry.State = EntityState.Modified;
+                }
             }
         }
 
-        public virtual async Task DeleteRangeAsync(IList<TEntity> entities)
+        public virtual async Task DeleteRangeAsync(IList<TEntity> entities, bool hardDelete = false)
         {
-            _dbContext.RemoveRange(entities);
+            foreach (var entity in entities)
+            {
+                var entry = _dbContext.Entry(entity);
+                if (entry.State == EntityState.Detached)
+                    _dbSet.Attach(entity);
+
+                if (hardDelete)
+                    entry.State = EntityState.Deleted;
+                else
+                {
+                    if (entry.Entity is IEntity en)
+                        en.IsDeleted = true;
+                    entry.State = EntityState.Modified;
+                }
+            }
         }
         #endregion
 
         #region LINQ
-        public virtual IList<TResult> Get<TResult>(Expression<Func<TEntity, TResult>> selector,
-                            Expression<Func<TEntity, bool>> predicate = null,
-                            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-                            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                            bool disableTracking = true)
+        public virtual IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> predicate = null, bool disableTracking = true, bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
+
+            if (predicate != null)
+                query = query.Where(predicate);
+
+            if (disableTracking)
+                query = query.AsNoTracking();
+
+            return query;
+        }
+
+        public virtual IList<TResult> Get<TResult>(Expression<Func<TEntity, TResult>> selector,
+                            Expression<Func<TEntity, bool>> predicate,
+                            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
+                            bool disableTracking = true,
+                            bool ignoreQueryFilters = false)
+        {
+            IQueryable<TEntity> query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
 
             if (include != null)
                 query = include(query);
@@ -234,9 +330,13 @@ namespace UltraPro.Repositories.Core
                             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
                             int pageIndex = 1, int pageSize = 10,
-                            bool disableTracking = true)
+                            bool disableTracking = true,
+                            bool ignoreQueryFilters = false)
         {
             IQueryable<TEntity> query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
 
             int total = query.Count();
             int totalFilter = total;
@@ -265,9 +365,13 @@ namespace UltraPro.Repositories.Core
                             Expression<Func<TEntity, bool>> predicate = null,
                             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null,
-                            bool disableTracking = true)
+                            bool disableTracking = true,
+                            bool ignoreQueryFilters = true)
         {
             IQueryable<TEntity> query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
 
             if (include != null)
                 query = include(query);
@@ -286,14 +390,24 @@ namespace UltraPro.Repositories.Core
             return result;
         }
 
-        public virtual TEntity GetById(object id)
-        {
-            return _dbSet.Find(id);
-        }
-
-        public virtual int GetCount(Expression<Func<TEntity, bool>> predicate = null)
+        public virtual TEntity GetById(TKey id, bool ignoreQueryFilters = false)
         {
             var query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
+
+            var result = query.FirstOrDefault(x => x.Id.Equals(id));
+
+            return result;
+        }
+
+        public virtual int GetCount(Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false)
+        {
+            var query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
 
             if (predicate != null)
             {
@@ -303,64 +417,137 @@ namespace UltraPro.Repositories.Core
             return query.Count();
         }
 
-        public virtual bool IsExists(Expression<Func<TEntity, bool>> predicate)
+        public virtual long GetSum(Expression<Func<TEntity, long>> selector, Expression<Func<TEntity, bool>> predicate = null, bool ignoreQueryFilters = false)
         {
             var query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            return query.Sum(selector);
+        }
+
+        public virtual bool IsExists(Expression<Func<TEntity, bool>> predicate, bool ignoreQueryFilters = false)
+        {
+            var query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
 
             return query.Any(predicate);
         }
 
         public virtual void Add(TEntity entity)
         {
-            _dbSet.Add(entity);
+            var entry = _dbContext.Entry(entity);
+            _dbSet.Attach(entity);
+            entry.State = EntityState.Added;
         }
 
         public virtual void AddRange(IList<TEntity> entities)
         {
-            _dbSet.AddRange(entities);
+            foreach (var entity in entities)
+            {
+                var entry = _dbContext.Entry(entity);
+                _dbSet.Attach(entity);
+                entry.State = EntityState.Added;
+            }
         }
 
         public virtual void Update(TEntity entity)
         {
-            _dbSet.Attach(entity);
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            var entry = _dbContext.Entry(entity);
+            if (entry.State == EntityState.Detached)
+                _dbSet.Attach(entity);
+            entry.State = EntityState.Modified;
         }
 
         public virtual void UpdateRange(IList<TEntity> entities)
         {
-            _dbContext.UpdateRange(entities);
+            foreach (var entity in entities)
+            {
+                var entry = _dbContext.Entry(entity);
+                if (entry.State == EntityState.Detached)
+                    _dbSet.Attach(entity);
+                entry.State = EntityState.Modified;
+            }
         }
 
-        public virtual void Delete(object id)
+        public virtual void Delete(object id, bool hardDelete = false)
         {
             var entity = _dbSet.Find(id);
 
-            Delete(entity);
+            Delete(entity, hardDelete);
         }
 
-        public virtual void Delete(TEntity entity)
+        public virtual void Delete(TEntity entity, bool hardDelete = false)
         {
-            if (_dbContext.Entry(entity).State == EntityState.Detached)
-            {
+            var entry = _dbContext.Entry(entity);
+            if (entry.State == EntityState.Detached)
                 _dbSet.Attach(entity);
-            }
 
-            _dbSet.Remove(entity);
+            if (hardDelete)
+                entry.State = EntityState.Deleted;
+            else
+            {
+                //entity.GetType().GetProperty(nameof(IEntity.IsDeleted)).SetValue(entity, true);
+                //entry.Property(nameof(IEntity.IsDeleted)).CurrentValue = true;
+                if (entry.Entity is IEntity en)
+                    en.IsDeleted = true;
+                entry.State = EntityState.Modified;
+            }
         }
 
-        public virtual void Delete(Expression<Func<TEntity, bool>> predicate)
+        public virtual void Delete(Expression<Func<TEntity, bool>> predicate, bool hardDelete = false)
         {
             var query = _dbSet.AsQueryable().Where(predicate);
 
             if (query.Any())
             {
-                _dbSet.RemoveRange(query);
+                foreach (var entity in query)
+                {
+                    var entry = _dbContext.Entry(entity);
+                    if (entry.State == EntityState.Detached)
+                        _dbSet.Attach(entity);
+
+                    if (hardDelete)
+                        entry.State = EntityState.Deleted;
+                    else
+                    {
+                        if (entry.Entity is IEntity en)
+                            en.IsDeleted = true;
+                        entry.State = EntityState.Modified;
+                    }
+                }
             }
         }
 
-        public virtual void DeleteRange(IList<TEntity> entities)
+        public virtual void DeleteRange(IList<TEntity> entities, bool hardDelete = false)
         {
-            _dbContext.RemoveRange(entities);
+
+            if (entities.Any())
+            {
+                foreach (var entity in entities)
+                {
+                    var entry = _dbContext.Entry(entity);
+                    if (entry.State == EntityState.Detached)
+                        _dbSet.Attach(entity);
+
+                    if (hardDelete)
+                        entry.State = EntityState.Deleted;
+                    else
+                    {
+                        if (entry.Entity is IEntity en)
+                            en.IsDeleted = true;
+                        entry.State = EntityState.Modified;
+                    }
+                }
+            }
         }
         #endregion
 

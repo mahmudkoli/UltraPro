@@ -10,7 +10,7 @@ using UltraPro.Repositories.Interfaces.AuditLogs;
 
 namespace UltraPro.Repositories.Implements.AuditLogs
 {
-    public class AuditLogRepository : Repository<AuditLog, int, ApplicationDbContext>, IAuditLogRepository
+    public class AuditLogRepository : Repository<AuditLog, Guid, ApplicationDbContext>, IAuditLogRepository
     {
         public AuditLogRepository(ApplicationDbContext dbContext) : base(dbContext)
         {

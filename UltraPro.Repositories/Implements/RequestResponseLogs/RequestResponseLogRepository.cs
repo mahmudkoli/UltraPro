@@ -10,7 +10,7 @@ using UltraPro.Repositories.Interfaces.RequestResponseLogs;
 
 namespace UltraPro.Repositories.Implements.RequestResponseLogs
 {
-    public class RequestResponseLogRepository : Repository<RequestResponseLog, int, ApplicationDbContext>, IRequestResponseLogRepository
+    public class RequestResponseLogRepository : Repository<RequestResponseLog, Guid, ApplicationDbContext>, IRequestResponseLogRepository
     {
         public RequestResponseLogRepository(ApplicationDbContext dbContext) : base(dbContext)
         {

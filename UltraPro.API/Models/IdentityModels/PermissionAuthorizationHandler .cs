@@ -6,6 +6,7 @@ using UltraPro.Common.Constants;
 using UltraPro.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace UltraPro.API.Models.IdentityModels
 {
@@ -45,6 +46,14 @@ namespace UltraPro.API.Models.IdentityModels
             var user = await _userManager.FindByIdAsync(userId);
             var userRoleNames = await _userManager.GetRolesAsync(user);
             var userRoles = _roleManager.Roles.Where(x => userRoleNames.Contains(x.Name));
+            //var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //var guidUserId = Guid.Empty;
+            //if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out guidUserId)) return;
+            //var query = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role).AsQueryable();
+            //query = query.IgnoreQueryFilters();
+            //var user = await query.FirstOrDefaultAsync(x => x.Id == guidUserId);
+            //if (user == null) return;
+            //var userRoles = user.UserRoles.Select(x => x.Role).ToList();
 
             foreach (var role in userRoles)
             {

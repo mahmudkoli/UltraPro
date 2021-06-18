@@ -13,6 +13,7 @@ using UltraPro.Entities.Core;
 using UltraPro.Common.Services;
 using System.Reflection;
 using UltraPro.Repositories.Helper;
+using UltraPro.Repositories.Extensions;
 
 namespace UltraPro.Repositories.Context
 {
@@ -70,6 +71,9 @@ namespace UltraPro.Repositories.Context
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyGlobalFilters<IEntity>(x => !x.IsDeleted);
+            //modelBuilder.ApplyGlobalFilters<bool>(nameof(IEntity.IsDeleted), false);
 
             modelBuilder.Entity<ApplicationUserRole>(userRole =>
             {

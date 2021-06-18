@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UltraPro.Entities.Core;
 
 namespace UltraPro.Entities
 {
-    public class RequestResponseLog
+    public class RequestResponseLog : IKey<Guid>
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }

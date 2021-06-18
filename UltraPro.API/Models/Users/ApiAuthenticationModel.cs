@@ -80,15 +80,12 @@ namespace UltraPro.API.Models
         public string PhoneNumber { get; set; }
         public string ImageUrl { get; set; }
         public string JwtToken { get; set; }
-        public Guid UserRoleId { get; set; }
         [JsonIgnore] // refresh token is returned in http only cookie
         public string RefreshToken { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<ApplicationUser, ApiAuthenticateUserModel>()
-                .ForMember(dest => dest.UserRoleId, opt => opt.MapFrom(src => 
-                    src.UserRoles != null && src.UserRoles.Any() ? src.UserRoles.FirstOrDefault().RoleId : Guid.Empty));
+            profile.CreateMap<ApplicationUser, ApiAuthenticateUserModel>();
         }
     }
 

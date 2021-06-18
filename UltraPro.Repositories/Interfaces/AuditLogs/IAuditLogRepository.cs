@@ -9,7 +9,7 @@ using UltraPro.Repositories.Core;
 
 namespace UltraPro.Repositories.Interfaces.AuditLogs
 {
-    public interface IAuditLogRepository : IRepository<AuditLog, int, ApplicationDbContext>
+    public interface IAuditLogRepository : IRepository<AuditLog, Guid, ApplicationDbContext>
     {
         
     }

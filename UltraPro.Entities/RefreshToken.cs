@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UltraPro.Entities.Core;
 
 namespace UltraPro.Entities
 {
-    public class RefreshToken
+    public class RefreshToken : IKey<Guid>
     {
         public Guid Id { get; set; }
         public string Token { get; set; }

@@ -9,7 +9,7 @@ using UltraPro.Repositories.Core;
 
 namespace UltraPro.Repositories.Interfaces.RequestResponseLogs
 {
-    public interface IRequestResponseLogRepository : IRepository<RequestResponseLog, int, ApplicationDbContext>
+    public interface IRequestResponseLogRepository : IRepository<RequestResponseLog, Guid, ApplicationDbContext>
     {
         
     }

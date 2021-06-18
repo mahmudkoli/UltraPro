@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UltraPro.Entities.Core
 {
-    public abstract class Entity<TKey> : IEntity
+    public abstract class Entity<TKey> : IEntity, IKey<TKey>
     {
         public TKey Id { get; set; }
         public bool IsDeleted { get; set; }

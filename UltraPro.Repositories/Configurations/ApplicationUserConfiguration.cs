@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UltraPro.Common.Enums;
 using UltraPro.Entities;
 
 namespace UltraPro.Repositories.Configurations
@@ -13,6 +14,8 @@ namespace UltraPro.Repositories.Configurations
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
+            //builder.HasQueryFilter(x => !x.IsDeleted && x.Status != EnumApplicationUserStatus.SuperAdmin);
+            builder.HasQueryFilter(x => !x.IsDeleted);
             builder.Property(x => x.FullName)
                 .IsRequired()
                 .HasMaxLength(30);

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UltraPro.Common.Enums;
+using UltraPro.Entities.Core;
 
 namespace UltraPro.Entities
 {
-    public class AuditLog
+    public class AuditLog : IKey<Guid>
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
