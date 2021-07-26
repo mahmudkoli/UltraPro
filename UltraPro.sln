@@ -3,15 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraPro.API", "UltraPro.API\UltraPro.API.csproj", "{294DF923-2BA0-4353-B53E-1656B9DCAFDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.API", "UltraPro.API\UltraPro.API.csproj", "{294DF923-2BA0-4353-B53E-1656B9DCAFDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraPro.Common", "UltraPro.Common\UltraPro.Common.csproj", "{A6B4D4E2-1B93-4AD3-8E9F-99ADA3AC3187}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.Common", "UltraPro.Common\UltraPro.Common.csproj", "{A6B4D4E2-1B93-4AD3-8E9F-99ADA3AC3187}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraPro.Repositories", "UltraPro.Repositories\UltraPro.Repositories.csproj", "{6756CF7E-9FDA-4477-8D69-320FD5ED4455}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.Repositories", "UltraPro.Repositories\UltraPro.Repositories.csproj", "{6756CF7E-9FDA-4477-8D69-320FD5ED4455}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraPro.Entities", "UltraPro.Entities\UltraPro.Entities.csproj", "{4014DD37-51F3-4E71-9134-62E1BBE613DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.Entities", "UltraPro.Entities\UltraPro.Entities.csproj", "{4014DD37-51F3-4E71-9134-62E1BBE613DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraPro.Services", "UltraPro.Services\UltraPro.Services.csproj", "{0F623C84-A7F5-464C-BEDD-0613586B9229}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.Services", "UltraPro.Services\UltraPro.Services.csproj", "{0F623C84-A7F5-464C-BEDD-0613586B9229}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraPro.IdentityServer4", "UltraPro.IdentityServer4\UltraPro.IdentityServer4.csproj", "{A0C3BAF8-A694-4B2D-A424-90CE0C3241D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraPro.IS4API", "UltraPro.IS4API\UltraPro.IS4API.csproj", "{5E2BF401-6F48-46CC-B39D-F0E591F80E37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{0F623C84-A7F5-464C-BEDD-0613586B9229}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F623C84-A7F5-464C-BEDD-0613586B9229}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F623C84-A7F5-464C-BEDD-0613586B9229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0C3BAF8-A694-4B2D-A424-90CE0C3241D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0C3BAF8-A694-4B2D-A424-90CE0C3241D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0C3BAF8-A694-4B2D-A424-90CE0C3241D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0C3BAF8-A694-4B2D-A424-90CE0C3241D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E2BF401-6F48-46CC-B39D-F0E591F80E37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E2BF401-6F48-46CC-B39D-F0E591F80E37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E2BF401-6F48-46CC-B39D-F0E591F80E37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E2BF401-6F48-46CC-B39D-F0E591F80E37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
