@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UltraPro.Services.Exceptions;
+using UltraPro.Common.Exceptions;
 
 namespace UltraPro.API.Extensions
 {

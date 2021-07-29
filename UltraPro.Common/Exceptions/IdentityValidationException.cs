@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UltraPro.Services.Exceptions
+namespace UltraPro.Common.Exceptions
 {
     public class IdentityValidationException : Exception
     {

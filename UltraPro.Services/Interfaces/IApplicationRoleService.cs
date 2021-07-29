@@ -3,6 +3,7 @@ using UltraPro.Entities.NotMapped;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UltraPro.Common.Model;
 
 namespace UltraPro.Services.Interfaces
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace UltraPro.Services.Exceptions
+namespace UltraPro.Common.Exceptions
 {
     public class DuplicationException : Exception
     {

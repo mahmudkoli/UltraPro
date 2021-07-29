@@ -10,7 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using UltraPro.API.Core;
-using UltraPro.Services.Exceptions;
+using UltraPro.Common.Exceptions;
 
 namespace UltraPro.API.Common
 {

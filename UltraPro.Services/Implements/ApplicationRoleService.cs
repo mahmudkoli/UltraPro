@@ -3,7 +3,7 @@ using UltraPro.Common.Enums;
 using UltraPro.Entities;
 using UltraPro.Entities.NotMapped;
 using UltraPro.Repositories.Extensions;
-using UltraPro.Services.Exceptions;
+using UltraPro.Common.Exceptions;
 using UltraPro.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +15,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Transactions;
 using UltraPro.Common.Services;
+using UltraPro.Common.Model;
 
 namespace UltraPro.Services.Implements
 {

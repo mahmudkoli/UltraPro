@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UltraPro.Common.Exceptions;
 using UltraPro.Entities;
 using UltraPro.Repositories.Context;
 
@@ -33,8 +34,7 @@ namespace UltraPro.CQRS.Products.Commands.DeleteProducts
 
             if (entity == null)
             {
-                //throw new NotFoundException(nameof(Product), request.Id);
-                throw new Exception();
+                throw new NotFoundException(nameof(Product), request.Id);
             }
 
             _context.Products.Remove(entity);

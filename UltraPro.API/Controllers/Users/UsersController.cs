@@ -13,6 +13,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using UltraPro.Common.Model;
 
 namespace UltraPro.API.Controllers.Users
 {

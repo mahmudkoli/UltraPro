@@ -69,7 +69,6 @@ namespace UltraPro.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCQRSServices();
             var connectionStringName = "DefaultConnection";
             var connectionString = Configuration.GetConnectionString(connectionStringName);
             var migrationAssemblyName = typeof(Startup).Assembly.FullName;
@@ -93,6 +92,7 @@ namespace UltraPro.API
             // Repository and UnitOfWork, Service
             services.AddRepositories();
             services.AddServices(appSettings);
+            services.AddCQRSServices();
 
             services.AddHttpContextAccessor();
 
@@ -101,6 +101,8 @@ namespace UltraPro.API
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString, b => b.MigrationsAssembly(migrationAssemblyName)));
 
+            services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+            
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders()

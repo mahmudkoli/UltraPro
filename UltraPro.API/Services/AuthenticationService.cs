@@ -21,7 +21,7 @@ using UltraPro.Common.Constants;
 using UltraPro.Common.Enums;
 using UltraPro.Common.Services;
 using UltraPro.Entities;
-using UltraPro.Services.Exceptions;
+using UltraPro.Common.Exceptions;
 using UltraPro.Services.Interfaces;
 
 namespace UltraPro.API.Services

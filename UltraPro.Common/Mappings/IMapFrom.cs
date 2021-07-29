@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace UltraPro.API.Mappings
+namespace UltraPro.Common.Mappings
 {
     public interface IMapFrom<T>
     {   

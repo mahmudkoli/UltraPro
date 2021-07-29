@@ -13,7 +13,7 @@ using UltraPro.Repositories.Extensions;
 using UltraPro.Repositories.Interfaces.AuditLogs;
 using UltraPro.Repositories.Interfaces.RefreshTokens;
 using UltraPro.Repositories.Interfaces.SingleValue;
-using UltraPro.Services.Exceptions;
+using UltraPro.Common.Exceptions;
 using UltraPro.Services.Interfaces;
 
 namespace UltraPro.Services.Implements

@@ -1,6 +1,6 @@
 using UltraPro.Common.Enums;
 using UltraPro.Entities;
-using UltraPro.API.Mappings;
+using UltraPro.Common.Mappings;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using System;

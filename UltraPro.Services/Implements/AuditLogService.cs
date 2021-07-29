@@ -11,8 +11,9 @@ using UltraPro.Entities.NotMapped;
 using UltraPro.Repositories.Extensions;
 using UltraPro.Repositories.Interfaces.AuditLogs;
 using UltraPro.Repositories.Interfaces.SingleValue;
-using UltraPro.Services.Exceptions;
+using UltraPro.Common.Exceptions;
 using UltraPro.Services.Interfaces;
+using UltraPro.Common.Model;
 
 namespace UltraPro.Services.Implements
 {

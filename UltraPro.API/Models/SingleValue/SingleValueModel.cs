@@ -1,6 +1,6 @@
 using UltraPro.Common.Enums;
 using UltraPro.Entities;
-using UltraPro.API.Mappings;
+using UltraPro.Common.Mappings;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,7 @@ namespace UltraPro.API.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Code { get; set; }
         public string Description { get; set; }
         public int Sequence { get; set; }
         public int TypeId { get; set; }
@@ -37,6 +38,7 @@ namespace UltraPro.API.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Code { get; set; }
         public string Description { get; set; }
         public int Sequence { get; set; }
         public int TypeId { get; set; }
@@ -49,7 +51,8 @@ namespace UltraPro.API.Models
         public void Mapping(Profile profile)
         {
             profile.CreateMap<SaveSingleValueDetailModel, SingleValueDetail>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(s => s.Name.Trim()));
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(s => s.Name.Trim()))
+                .ForMember(dest => dest.Code, opt => opt.MapFrom(s => s.Code.Trim()));
             profile.CreateMap<SingleValueDetail, SaveSingleValueDetailModel>();
         }
     }

@@ -10,12 +10,13 @@ using UltraPro.Entities;
 using UltraPro.Entities.NotMapped;
 using UltraPro.Common.Enums;
 using UltraPro.Repositories.Extensions;
-using UltraPro.Services.Exceptions;
+using UltraPro.Common.Exceptions;
 using UltraPro.Common.Constants;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore.Query;
 using UltraPro.Common.Helpers;
 using UltraPro.Common.Services;
+using UltraPro.Common.Model;
 
 namespace UltraPro.Services.Implements
 {

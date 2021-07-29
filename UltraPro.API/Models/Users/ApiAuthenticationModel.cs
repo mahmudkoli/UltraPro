@@ -1,5 +1,5 @@
 using UltraPro.Entities;
-using UltraPro.API.Mappings;
+using UltraPro.Common.Mappings;
 using AutoMapper;
 using System;
 using System.ComponentModel.DataAnnotations;

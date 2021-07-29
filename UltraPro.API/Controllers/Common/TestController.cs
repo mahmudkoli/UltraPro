@@ -12,7 +12,7 @@ using System;
 using UltraPro.Entities.NotMapped;
 using UltraPro.Entities;
 using UltraPro.API.Models;
-using UltraPro.Services.Exceptions;
+using UltraPro.Common.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace UltraPro.API.Controllers.Users

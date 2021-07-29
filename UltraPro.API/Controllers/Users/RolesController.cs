@@ -12,6 +12,7 @@ using UltraPro.API.Models.IdentityModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UltraPro.Common.Model;
 
 namespace UltraPro.API.Controllers.Users
 {

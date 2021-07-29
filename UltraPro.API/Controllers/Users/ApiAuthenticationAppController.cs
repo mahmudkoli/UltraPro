@@ -14,7 +14,7 @@ using UltraPro.API.Core;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using UltraPro.API.Controllers.Common;
-using UltraPro.Services.Exceptions;
+using UltraPro.Common.Exceptions;
 using UltraPro.Common.Constants;
 using UltraPro.Services.Interfaces;
 using UltraPro.Common.Enums;

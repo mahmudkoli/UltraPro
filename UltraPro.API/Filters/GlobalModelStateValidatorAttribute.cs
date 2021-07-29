@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UltraPro.API.Core;
 using UltraPro.API.Extensions;
-using UltraPro.Services.Exceptions;
+using UltraPro.Common.Exceptions;
 
 namespace UltraPro.API.Filters
 {

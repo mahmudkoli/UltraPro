@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UltraPro.API.Models.Logs;
+using UltraPro.Common.Model;
 
 namespace UltraPro.API.Controllers.SingleValue
 {

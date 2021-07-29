@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UltraPro.Services.Exceptions
+namespace UltraPro.Common.Exceptions
 {
     public class ValidationException : Exception
     {

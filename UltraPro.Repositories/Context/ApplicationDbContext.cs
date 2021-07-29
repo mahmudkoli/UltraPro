@@ -19,7 +19,7 @@ namespace UltraPro.Repositories.Context
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid,
     IdentityUserClaim<Guid>, ApplicationUserRole, IdentityUserLogin<Guid>,
-    IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
+    IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>, IApplicationDbContext
     {
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTime _dateTime;

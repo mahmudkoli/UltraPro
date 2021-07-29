@@ -17,6 +17,11 @@ namespace UltraPro.API.Models.Validators
                 //.NotEmpty().WithMessage("Name is required.")
                 .NotEmpty().WithMessage("{PropertyName} should be not empty. NEVER!")
                 .Length(2, 25).WithMessage("{PropertyValue} must be more than 2 letter.");
+            RuleFor(v => v.Code)
+                //.Cascade(CascadeMode.Stop)
+                //.NotEmpty().WithMessage("Code is required.")
+                .NotEmpty().WithMessage("{PropertyName} should be not empty. NEVER!")
+                .Length(2, 25).WithMessage("{PropertyValue} must be more than 2 letter.");
 
             RuleFor(x => x.TypeId)
                 .Must(x => x > 0)

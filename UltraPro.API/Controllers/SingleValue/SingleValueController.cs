@@ -12,10 +12,11 @@ using UltraPro.API.Models.IdentityModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UltraPro.Common.Model;
 
 namespace UltraPro.API.Controllers.SingleValue
 {
-    [Authorize]
+    //[Authorize]
     //[ApiExplorerSettings(IgnoreApi = true)]
     [ApiVersion("1")]
     [Route("api/v{v:apiVersion}/single-value")]
@@ -33,7 +34,7 @@ namespace UltraPro.API.Controllers.SingleValue
         }
 
         [HttpGet]
-        [Authorize(Permissions.SingleValue.ListView)]
+        //[Authorize(Permissions.SingleValue.ListView)]
         public async Task<IActionResult> Get([FromQuery] SingleValueQuery query)
         {
             var result = await _singleValueService.GetAllAsync(query);
@@ -42,7 +43,7 @@ namespace UltraPro.API.Controllers.SingleValue
         }
 
         [HttpGet("{id}")]
-        [Authorize(Permissions.SingleValue.DetailsView)]
+        //[Authorize(Permissions.SingleValue.DetailsView)]
         public async Task<IActionResult> Get(int id)
         {
             var singleValue = await _singleValueService.GetByIdAsync(id);
@@ -51,7 +52,7 @@ namespace UltraPro.API.Controllers.SingleValue
         }
 
         [HttpPost]
-        [Authorize(Permissions.SingleValue.Create)]
+        //[Authorize(Permissions.SingleValue.Create)]
         public async Task<IActionResult> Create([FromBody] SaveSingleValueDetailModel model)
         {
             var singleValue = _mapper.Map<SaveSingleValueDetailModel, SingleValueDetail>(model);
@@ -60,7 +61,7 @@ namespace UltraPro.API.Controllers.SingleValue
         }
 
         [HttpPut("{id}")]
-        [Authorize(Permissions.SingleValue.Edit)]
+        //[Authorize(Permissions.SingleValue.Edit)]
         public async Task<IActionResult> Update(int id, [FromBody] SaveSingleValueDetailModel model)
         {
             var singleValue = _mapper.Map<SaveSingleValueDetailModel, SingleValueDetail>(model);
@@ -69,7 +70,7 @@ namespace UltraPro.API.Controllers.SingleValue
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Permissions.SingleValue.Delete)]
+        //[Authorize(Permissions.SingleValue.Delete)]
         public async Task<IActionResult> Delete(int id)
         {
             await _singleValueService.DeleteAsync(id);

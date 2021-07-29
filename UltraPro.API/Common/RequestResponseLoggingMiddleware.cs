@@ -14,6 +14,7 @@ using UltraPro.Common.Services;
 using UltraPro.Entities;
 using UltraPro.Services.Interfaces;
 using Wangkanai.Detection.Services;
+using UltraPro.Common.Model;
 
 namespace UltraPro.API.Common
 {

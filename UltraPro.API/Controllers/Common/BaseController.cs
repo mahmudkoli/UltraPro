@@ -7,7 +7,7 @@ using UltraPro.API.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using UltraPro.Services.Exceptions;
+using UltraPro.Common.Exceptions;
 using System.Net;
 
 namespace UltraPro.API.Controllers.Common

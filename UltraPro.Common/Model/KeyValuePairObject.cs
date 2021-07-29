@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UltraPro.Entities
+namespace UltraPro.Common.Model
 {
     public class KeyValuePairObject
     {

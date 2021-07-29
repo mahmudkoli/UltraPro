@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UltraPro.CQRS.Common.Mappings;
+using UltraPro.Common.Mappings;
 using UltraPro.Entities;
 
 namespace UltraPro.CQRS.Products.Queries.GetProductsById
