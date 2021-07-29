@@ -30,6 +30,7 @@ namespace UltraPro.Repositories.Context
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<SingleValueType> SingleValueTypes { get; set; }
         public DbSet<SingleValueDetail> SingleValueDetails { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options,

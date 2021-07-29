@@ -13,9 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.Entities", "UltraP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.Services", "UltraPro.Services\UltraPro.Services.csproj", "{0F623C84-A7F5-464C-BEDD-0613586B9229}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraPro.IdentityServer4", "UltraPro.IdentityServer4\UltraPro.IdentityServer4.csproj", "{A0C3BAF8-A694-4B2D-A424-90CE0C3241D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.IdentityServer4", "UltraPro.IdentityServer4\UltraPro.IdentityServer4.csproj", "{A0C3BAF8-A694-4B2D-A424-90CE0C3241D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraPro.IS4API", "UltraPro.IS4API\UltraPro.IS4API.csproj", "{5E2BF401-6F48-46CC-B39D-F0E591F80E37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.IS4API", "UltraPro.IS4API\UltraPro.IS4API.csproj", "{5E2BF401-6F48-46CC-B39D-F0E591F80E37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraPro.CQRS", "UltraPro.CQRS\UltraPro.CQRS.csproj", "{655455DC-7305-4DD5-82DA-E2B58D243B2C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{5E2BF401-6F48-46CC-B39D-F0E591F80E37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E2BF401-6F48-46CC-B39D-F0E591F80E37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E2BF401-6F48-46CC-B39D-F0E591F80E37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{655455DC-7305-4DD5-82DA-E2B58D243B2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{655455DC-7305-4DD5-82DA-E2B58D243B2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{655455DC-7305-4DD5-82DA-E2B58D243B2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{655455DC-7305-4DD5-82DA-E2B58D243B2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -32,6 +32,7 @@ using UltraPro.API.Models.IdentityModels;
 using UltraPro.API.Services;
 using UltraPro.Common.Constants;
 using UltraPro.Common.Services;
+using UltraPro.CQRS;
 using UltraPro.Entities;
 using UltraPro.Repositories.Context;
 using UltraPro.Services.Interfaces;
@@ -68,6 +69,7 @@ namespace UltraPro.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCQRSServices();
             var connectionStringName = "DefaultConnection";
             var connectionString = Configuration.GetConnectionString(connectionStringName);
             var migrationAssemblyName = typeof(Startup).Assembly.FullName;
