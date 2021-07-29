@@ -19,9 +19,9 @@ namespace UltraPro.CQRS.Products.Commands.DeleteProducts
 
     public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand>
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
 
-        public DeleteProductCommandHandler(ApplicationDbContext context)
+        public DeleteProductCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }

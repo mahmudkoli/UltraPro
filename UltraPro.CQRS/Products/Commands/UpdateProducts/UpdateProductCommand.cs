@@ -21,9 +21,9 @@ namespace UltraPro.CQRS.Products.Commands.UpdateProducts
 
     public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand>
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
 
-        public UpdateProductCommandHandler(ApplicationDbContext context)
+        public UpdateProductCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }

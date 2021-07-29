@@ -19,10 +19,10 @@ namespace UltraPro.CQRS.Products.Queries.GetProductsById
 
     public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, ProductVm>
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public GetProductByIdQueryHandler(ApplicationDbContext context, IMapper mapper)
+        public GetProductByIdQueryHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
