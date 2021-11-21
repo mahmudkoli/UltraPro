@@ -280,7 +280,7 @@ namespace UltraPro.API
             app.Use(async (httpContext, next) =>
             {
                 var userName = httpContext.User.Identity.IsAuthenticated ? httpContext.User.Identity.Name : "Guest";
-                LogContext.PushProperty(ConstantsApplication.SerilogMSSqlServerAdditionalColumnUserName, userName);
+                LogContext.PushProperty(ConstantsLog.SerilogMSSqlServerAdditionalColumnUserName, userName);
                 await next.Invoke();
             });
 

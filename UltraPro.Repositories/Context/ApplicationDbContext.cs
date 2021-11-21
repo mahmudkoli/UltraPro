@@ -25,6 +25,7 @@ namespace UltraPro.Repositories.Context
         private readonly IDateTime _dateTime;
 
         // Add DbSet here
+        public DbSet<ApplicationLog> ApplicationLogs { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<RequestResponseLog> RequestResponseLogs { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }

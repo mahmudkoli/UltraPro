@@ -9,6 +9,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20210425194759_SingleValueAdded.cs" />
     <Compile Remove="Migrations\20210425194759_SingleValueAdded.Designer.cs" />
+    <Compile Remove="Migrations\20211121131740_ApplicationLogAdded.cs" />
+    <Compile Remove="Migrations\20211121131740_ApplicationLogAdded.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

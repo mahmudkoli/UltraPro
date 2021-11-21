@@ -4,10 +4,11 @@ using System.Text;
 
 namespace UltraPro.Common.Constants
 {
-    public class ConstantsApplication
+    public class ConstantsLog
     {
         public const string SerilogMSSqlServerTableName = "ApplicationLogs";
         public const string SerilogMSSqlServerAdditionalColumnUserName = "UserName";
+        public const string SerilogMSSqlServerAdditionalColumnIP = "IP";
     }
 
     public class ConstantsUserRole

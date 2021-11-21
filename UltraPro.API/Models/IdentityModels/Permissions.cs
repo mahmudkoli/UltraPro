@@ -45,5 +45,11 @@ namespace UltraPro.API.Models.IdentityModels
             public const string ListView = "Permissions.AuditLog.ListView";
             public const string DetailsView = "Permissions.AuditLog.DetailsView";
         }
+
+        public static class ApplicationLogs
+        {
+            public const string ListView = "Permissions.ApplicationLog.ListView";
+            public const string DetailsView = "Permissions.ApplicationLog.DetailsView";
+        }
     }
 }

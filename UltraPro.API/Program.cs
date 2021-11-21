@@ -33,9 +33,11 @@ namespace UltraPro.API
             {
                 AdditionalColumns = new Collection<SqlColumn>
                 {
-                    new SqlColumn(ConstantsApplication.SerilogMSSqlServerAdditionalColumnUserName, SqlDbType.VarChar)
+                    new SqlColumn(ConstantsLog.SerilogMSSqlServerAdditionalColumnUserName, SqlDbType.NVarChar, dataLength: 200),
+                    new SqlColumn(ConstantsLog.SerilogMSSqlServerAdditionalColumnIP, SqlDbType.VarChar, dataLength: 200)
                 }
             };
+            columnOptions.Id.DataType = SqlDbType.BigInt;
 
             Log.Logger = new LoggerConfiguration()
                         .MinimumLevel.Debug()
@@ -43,7 +45,7 @@ namespace UltraPro.API
                         .Enrich.FromLogContext()
                         .WriteTo.Console()
                         .WriteTo.File("wwwroot//Logs//log.txt", rollingInterval: RollingInterval.Day)
-                        .WriteTo.MSSqlServer(connectionString, sinkOptions: new MSSqlServerSinkOptions { TableName = ConstantsApplication.SerilogMSSqlServerTableName }, 
+                        .WriteTo.MSSqlServer(connectionString, sinkOptions: new MSSqlServerSinkOptions { TableName = ConstantsLog.SerilogMSSqlServerTableName }, 
                                                 null, null, LogEventLevel.Information, null, columnOptions: columnOptions, null, null)
                         .CreateLogger();
 
