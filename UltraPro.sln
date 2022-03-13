@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31129.286
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.API", "UltraPro.API\UltraPro.API.csproj", "{294DF923-2BA0-4353-B53E-1656B9DCAFDF}"
 EndProject
@@ -17,7 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.IdentityServer4", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.IS4API", "UltraPro.IS4API\UltraPro.IS4API.csproj", "{5E2BF401-6F48-46CC-B39D-F0E591F80E37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraPro.CQRS", "UltraPro.CQRS\UltraPro.CQRS.csproj", "{655455DC-7305-4DD5-82DA-E2B58D243B2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.CQRS", "UltraPro.CQRS\UltraPro.CQRS.csproj", "{655455DC-7305-4DD5-82DA-E2B58D243B2C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.MassTransit", "UltraPro.MassTransit\UltraPro.MassTransit.csproj", "{BAF105D0-0948-436E-AA9D-F3A7A1A1E504}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UltraPro.Publisher", "UltraPro.Publisher\UltraPro.Publisher.csproj", "{A978AAA8-B2F9-4720-8989-6E51CA2AEC6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltraPro.Consumer", "UltraPro.Consumer\UltraPro.Consumer.csproj", "{DC53BD18-1B23-4942-91E8-08E0BC78E2FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +63,18 @@ Global
 		{655455DC-7305-4DD5-82DA-E2B58D243B2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{655455DC-7305-4DD5-82DA-E2B58D243B2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{655455DC-7305-4DD5-82DA-E2B58D243B2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAF105D0-0948-436E-AA9D-F3A7A1A1E504}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAF105D0-0948-436E-AA9D-F3A7A1A1E504}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAF105D0-0948-436E-AA9D-F3A7A1A1E504}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAF105D0-0948-436E-AA9D-F3A7A1A1E504}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A978AAA8-B2F9-4720-8989-6E51CA2AEC6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A978AAA8-B2F9-4720-8989-6E51CA2AEC6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A978AAA8-B2F9-4720-8989-6E51CA2AEC6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A978AAA8-B2F9-4720-8989-6E51CA2AEC6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC53BD18-1B23-4942-91E8-08E0BC78E2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC53BD18-1B23-4942-91E8-08E0BC78E2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC53BD18-1B23-4942-91E8-08E0BC78E2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC53BD18-1B23-4942-91E8-08E0BC78E2FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
